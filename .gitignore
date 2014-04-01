@@ -1,0 +1,256 @@
+public class ArbolPrueba {
+
+	public NodoArbol raiz;
+
+    public ArbolPrueba() {
+    	raiz=null;
+    }
+
+    public void enorden(NodoArbol r){//como parámetro se envía la raíz
+    	if (r!=null){
+    		enorden(r.izq);
+    		System.out.print(r.dato+", ");
+    		enorden(r.der);
+    	}
+    }
+
+    public void postorden(NodoArbol r){//como parámetro se envía la raíz
+    	if (r!=null){
+    		postorden(r.izq);
+    		postorden(r.der);
+    		System.out.print(r.dato+", ");
+    	}
+    }
+
+    public void preorden(NodoArbol r){//como parámetro se envía la raíz
+    	if (r!=null){
+    		System.out.print(r.dato+", ");
+    		preorden(r.izq);
+    		preorden(r.der);
+    	}
+    }
+
+    public void agregar(int d){
+    	NodoArbol nuevo= new NodoArbol(d);
+
+    	if (raiz==null){
+    		raiz=nuevo;
+    	} else {
+    		NodoArbol aux=raiz;
+    		NodoArbol ant=null;
+    		while (aux!= null){
+    			ant=aux;
+    			if(nuevo.dato<aux.dato){
+    				aux=aux.izq;
+    				if(aux==null){
+    					ant.izq=nuevo;
+    				}
+    			} else{
+    				aux=aux.der;
+    				if(aux==null){
+    					ant.der=nuevo;
+    				}
+    			}
+    		}
+    	}
+    }
+   public void imprimirHojas(NodoArbol r){
+
+    	if (r!=null){
+    		imprimirHojas(r.izq);
+    		if(r.izq==null && r.der==null){
+    			System.out.print(r.dato+", ");
+    		}
+    		imprimirHojas(r.der);
+    	}
+    }
+    public void insercionUnica(int d){
+    	NodoArbol nuevo= new NodoArbol(d);
+
+    	if (raiz==null){
+    		raiz=nuevo;
+    	} else {
+    		NodoArbol aux=raiz;
+    		NodoArbol ant=null;
+    		while (aux!= null){
+    			ant=aux;
+    			if(nuevo.dato<aux.dato){
+    				aux=aux.izq;
+    				if(aux==null){
+    					ant.izq=nuevo;
+    				}
+    			} else{
+    				if (nuevo.dato==aux.dato){
+    					System.out.println("Ya existe");
+    					aux=null;
+    				} else {
+    					aux=aux.der;
+	    				if(aux==null){
+	    					ant.der=nuevo;
+	    				}
+    				}
+    			}
+    		}
+    	}
+    }
+
+    public NodoArbol buscar(int d){
+    	if (raiz==null){
+    		return null;
+    	} else {
+    		NodoArbol aux=raiz;
+    		while (aux!= null){
+    			if(d<aux.dato){
+    				aux=aux.izq;
+    			} else{
+    				if (d>aux.dato){
+    					aux=aux.der;
+    				} else {
+    					return aux;
+    				}
+
+    			}
+    		}
+    		return null;
+    	}
+    }
+
+    public NodoArbol buscarPadre(NodoArbol d){
+    	if (raiz==null){
+    		return null;
+    	} else {
+    		NodoArbol aux=raiz;
+    		NodoArbol padre=null;
+    		while (aux!= null){
+    			if(d.dato<aux.dato){
+    				padre=aux;
+    				aux=aux.izq;
+    			} else{
+    				System.out.println("busca padre de "+String.valueOf(d.dato));
+    				if (d.dato>aux.dato){
+    					padre=aux;
+    					aux=aux.der;
+    				} else {
+    					return padre;
+    				}
+
+    			}
+    		}
+    		return null;
+    	}
+    }
+
+    public boolean eliminar(NodoArbol aux){
+    	System.out.println("Paso "+String.valueOf(aux.dato));
+    	if (aux==null){ //No existe el elemento
+    		System.out.println("No eliminado");
+    		return false;
+    	} else {
+    		NodoArbol ant=buscarPadre(aux);
+    		if(ant==null)
+    			System.out.println("padre nulo");
+
+	    	//aux es el nodo a eliminar y ant es su nodo padre
+	    	if(aux.izq==null && aux.der==null){ //es nodo hoja
+	    		if(ant.izq==aux){
+	    			ant.izq=null;
+	    		} else {
+	    			ant.der=null;
+	    		}
+	    		aux=null;
+
+	    	} else { //no es nodo hoja
+	    		if(aux.izq!=null){//buscamos al mayor por izquierda
+	    			NodoArbol mayor=mayor(aux.izq);
+	    			int dato=mayor.dato;
+	    			eliminar(mayor);
+	    			aux.dato=dato;
+
+	    		} else { //Buscamos al menor por derecha
+	    			NodoArbol menor=menor(aux.der);
+	    			aux.dato=menor.dato;
+	    		//	eliminar(menor);
+	    		}
+	    	}
+
+    	}
+    	return false;
+
+    }
+
+    public NodoArbol mayor(NodoArbol raiz){
+    	if (raiz==null){
+    		return null;
+    	} else {
+    		NodoArbol aux=raiz;
+    		NodoArbol ant=null;
+    		while (aux.der!= null){
+    			ant=aux;
+    			aux=aux.der;
+    		}
+			if(ant!=null){//aux no es la raíz
+    			ant.der=null;
+    		}
+    		return aux;
+    	}
+    }
+
+	public NodoArbol menor(NodoArbol raiz){
+    	if (raiz==null){
+    		return null;
+    	} else {
+    		NodoArbol aux=raiz;
+    		NodoArbol ant=null;
+    		while (aux.izq!= null){
+    			ant=aux;
+    			aux=aux.izq;
+    		}
+			if(ant!=null){//aux no es la raíz
+    			ant.izq=null;
+    		}
+    		return aux;
+    	}
+    }
+
+    public static void main (String args[]){
+    	ArbolPrueba arbol= new ArbolPrueba();
+
+
+		arbol.agregar(10);
+    	arbol.agregar(15);
+    	arbol.agregar(5);
+    	arbol.agregar(3);
+    	arbol.agregar(7);
+    	arbol.agregar(20);
+    	arbol.agregar(17);
+    	arbol.agregar(6);
+    	arbol.agregar(50);
+    	arbol.agregar(9);
+    	arbol.agregar(30);
+    	arbol.agregar(35);
+    	arbol.agregar(2);
+    	arbol.agregar(11);
+    	arbol.agregar(18);
+
+
+
+    	arbol.enorden(arbol.raiz);
+    	System.out.println("");
+    /*	arbol.postorden(arbol.raiz);
+    	System.out.println("");
+    	arbol.preorden(arbol.raiz);
+    	System.out.println("");*/
+    /*	arbol.imprimirHojas(arbol.raiz);
+    	System.out.println("");*/
+
+    	arbol.eliminar(arbol.buscar(10));
+    //	arbol.eliminar(arbol.buscar(5));
+
+    	arbol.enorden(arbol.raiz);
+    	System.out.println("");
+    	arbol.imprimirHojas(arbol.raiz);
+
+    }
+
+
+}
